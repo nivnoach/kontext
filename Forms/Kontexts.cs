@@ -333,6 +333,7 @@ namespace Kontext.Forms
             // 
             // lstKontexts
             // 
+            this.lstKontexts.Activation = System.Windows.Forms.ItemActivation.OneClick;
             this.lstKontexts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -342,6 +343,8 @@ namespace Kontext.Forms
             this.lstKontexts.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lstKontexts.Font = new System.Drawing.Font("DengXian", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstKontexts.FullRowSelect = true;
+            this.lstKontexts.HotTracking = true;
+            this.lstKontexts.HoverSelection = true;
             this.lstKontexts.Location = new System.Drawing.Point(12, 48);
             this.lstKontexts.MultiSelect = false;
             this.lstKontexts.Name = "lstKontexts";
@@ -349,6 +352,8 @@ namespace Kontext.Forms
             this.lstKontexts.TabIndex = 2;
             this.lstKontexts.UseCompatibleStateImageBehavior = false;
             this.lstKontexts.View = System.Windows.Forms.View.Details;
+            this.lstKontexts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstKontexts_MouseDown);
+            this.lstKontexts.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lstKontexts_MouseMove);
             // 
             // clmKontexts
             // 
