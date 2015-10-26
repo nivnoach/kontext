@@ -7,26 +7,29 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using Kontext.Items;
+using Kontext.WindowKontext;
 
-namespace Kontext
+namespace Kontext.Forms
 {
     public class EditKontext : Form
     {
         private readonly List<IntPtr> _excludedHandles;
         private readonly Kontext _kontext;
-        private readonly Form _previewWindow = new PreviewWindow();
         private readonly WindowsPreview _previewer;
+        private readonly Form _previewWindow = new PreviewWindow();
         private readonly ImageList icons = new ImageList();
         private Button btnCancel;
         private Button btnOk;
+        private ColumnHeader clmAllKontextItems;
         private ColumnHeader clmName;
+#pragma warning disable 649
         private IContainer components;
+#pragma warning restore 649
+        private Label label1;
         private Label lblKontextName;
         private ListView lstKontextItems;
-        private ColumnHeader clmAllKontextItems;
-        private Label label1;
-        private TextBox txtKontextName;
         private ContextMenu selectOptionsMenu;
+        private TextBox txtKontextName;
 
         public EditKontext(Kontext kontext, List<IntPtr> excludedHandles = null)
             : this(excludedHandles)
@@ -40,6 +43,45 @@ namespace Kontext
             txtKontextName.Text = kontext.Name;
             txtKontextName.Enabled = false;
             btnOk.Enabled = true;
+        }
+
+        public EditKontext(List<IntPtr> excludedHandles = null)
+        {
+            _excludedHandles = excludedHandles ?? new List<IntPtr>();
+            InitializeComponent();
+            _kontext = new Kontext(string.Empty);
+
+            icons.Images.Clear();
+            lstKontextItems.Items.Clear();
+
+            // Enumerate the kontext items
+            var kontextItems = KontextEnumerator.GetAllItems(new List<IntPtr>(_excludedHandles));
+            if (kontextItems == null || !kontextItems.Any())
+            {
+                return;
+            }
+
+            // Regenerate the icons list
+            lstKontextItems.SmallImageList = null;
+            foreach (var ki in kontextItems)
+            {
+                var icon = ki.GetIcon();
+                if (icon != null)
+                    icons.Images.Add(ki.Name, icon.ToBitmap());
+            }
+            lstKontextItems.SmallImageList = icons;
+
+            // Add all items
+            lstKontextItems.Items.AddRange(
+                kontextItems
+                    .Select(ki => new ListViewItem(ki.Name)
+                    {
+                        Tag = (object) ki,
+                        ImageKey = icons.Images.ContainsKey(ki.Name) ? ki.Name : string.Empty
+                    }).ToArray());
+            _previewer = new WindowsPreview(_previewWindow.Handle,
+                (int) (Screen.FromHandle(Handle).WorkingArea.Width*0.2));
+            btnOk.Enabled = false;
         }
 
         private void CheckItems(Func<KontextItem, List<Kontext>, bool> predicate)
@@ -59,45 +101,6 @@ namespace Kontext
                 // Call predicate
                 lvi.Checked = predicate(ki, containingKontexts);
             }
-        }
-
-        public EditKontext(List<IntPtr> excludedHandles = null)
-        {
-            _excludedHandles = excludedHandles ?? new List<IntPtr>();
-            InitializeComponent();
-            _kontext = new Kontext(string.Empty);
-
-            icons.Images.Clear();
-            lstKontextItems.Items.Clear();
-
-            // Enumerate the kontext items
-            List<KontextItem> kontextItems = KontextEnumerator.GetAllItems(new List<IntPtr>(_excludedHandles));
-            if (kontextItems == null || ! kontextItems.Any())
-            {
-                return;
-            }
-
-            // Regenerate the icons list
-            lstKontextItems.SmallImageList = null;
-            foreach (KontextItem ki in kontextItems)
-            {
-                Icon icon = ki.GetIcon();
-                if (icon != null)
-                    icons.Images.Add(ki.Name, icon.ToBitmap());
-            }
-            lstKontextItems.SmallImageList = icons;
-
-            // Add all items
-            lstKontextItems.Items.AddRange(
-                kontextItems
-                    .Select(ki => new ListViewItem(ki.Name)
-                    {
-                        Tag = (object) ki,
-                        ImageKey = icons.Images.ContainsKey(ki.Name) ? ki.Name : string.Empty
-                    }).ToArray());
-            _previewer = new WindowsPreview(_previewWindow.Handle,
-                (int) (Screen.FromHandle(Handle).WorkingArea.Width*0.2));
-            btnOk.Enabled = false;
         }
 
         public Kontext GetKontext()
@@ -121,7 +124,7 @@ namespace Kontext
 
         private void lstKontextItems_MouseMove(object sender, MouseEventArgs e)
         {
-            ListViewItem itemAt = lstKontextItems.GetItemAt(e.X, e.Y);
+            var itemAt = lstKontextItems.GetItemAt(e.X, e.Y);
             if (itemAt == null)
                 return;
             var kontextItem = itemAt.Tag as KontextItem;
@@ -162,116 +165,117 @@ namespace Kontext
 
         private void InitializeComponent()
         {
-            this.txtKontextName = new System.Windows.Forms.TextBox();
-            this.lblKontextName = new System.Windows.Forms.Label();
-            this.btnOk = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.lstKontextItems = new System.Windows.Forms.ListView();
-            this.clmAllKontextItems = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.clmName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label1 = new System.Windows.Forms.Label();
-            this.SuspendLayout();
+            txtKontextName = new TextBox();
+            lblKontextName = new Label();
+            btnOk = new Button();
+            btnCancel = new Button();
+            lstKontextItems = new ListView();
+            clmAllKontextItems = new ColumnHeader();
+            clmName = new ColumnHeader();
+            label1 = new Label();
+            SuspendLayout();
             // 
             // txtKontextName
             // 
-            this.txtKontextName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtKontextName.Location = new System.Drawing.Point(101, 18);
-            this.txtKontextName.Margin = new System.Windows.Forms.Padding(6);
-            this.txtKontextName.Name = "txtKontextName";
-            this.txtKontextName.Size = new System.Drawing.Size(395, 33);
-            this.txtKontextName.TabIndex = 1;
-            this.txtKontextName.TextChanged += new System.EventHandler(this.txtKontextName_TextChanged);
+            txtKontextName.Anchor = (AnchorStyles.Top | AnchorStyles.Left)
+                                    | AnchorStyles.Right;
+            txtKontextName.Location = new Point(101, 18);
+            txtKontextName.Margin = new Padding(6);
+            txtKontextName.Name = "txtKontextName";
+            txtKontextName.Size = new Size(395, 33);
+            txtKontextName.TabIndex = 1;
+            txtKontextName.TextChanged += txtKontextName_TextChanged;
             // 
             // lblKontextName
             // 
-            this.lblKontextName.AutoSize = true;
-            this.lblKontextName.Location = new System.Drawing.Point(21, 21);
-            this.lblKontextName.Name = "lblKontextName";
-            this.lblKontextName.Size = new System.Drawing.Size(69, 26);
-            this.lblKontextName.TabIndex = 2;
-            this.lblKontextName.Text = "Name:";
+            lblKontextName.AutoSize = true;
+            lblKontextName.Location = new Point(21, 21);
+            lblKontextName.Name = "lblKontextName";
+            lblKontextName.Size = new Size(69, 26);
+            lblKontextName.TabIndex = 2;
+            lblKontextName.Text = "Name:";
             // 
             // btnOk
             // 
-            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(371, 373);
-            this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(125, 41);
-            this.btnOk.TabIndex = 3;
-            this.btnOk.Text = "OK";
-            this.btnOk.UseVisualStyleBackColor = true;
-            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+            btnOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnOk.DialogResult = DialogResult.OK;
+            btnOk.Location = new Point(371, 373);
+            btnOk.Name = "btnOk";
+            btnOk.Size = new Size(125, 41);
+            btnOk.TabIndex = 3;
+            btnOk.Text = "OK";
+            btnOk.UseVisualStyleBackColor = true;
+            btnOk.Click += btnOk_Click;
             // 
             // btnCancel
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(235, 373);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(131, 41);
-            this.btnCancel.TabIndex = 4;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnCancel.DialogResult = DialogResult.Cancel;
+            btnCancel.Location = new Point(235, 373);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(131, 41);
+            btnCancel.TabIndex = 4;
+            btnCancel.Text = "Cancel";
+            btnCancel.UseVisualStyleBackColor = true;
             // 
             // lstKontextItems
             // 
-            this.lstKontextItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstKontextItems.CheckBoxes = true;
-            this.lstKontextItems.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.clmAllKontextItems});
-            this.lstKontextItems.FullRowSelect = true;
-            this.lstKontextItems.Location = new System.Drawing.Point(26, 75);
-            this.lstKontextItems.Name = "lstKontextItems";
-            this.lstKontextItems.Size = new System.Drawing.Size(470, 292);
-            this.lstKontextItems.TabIndex = 5;
-            this.lstKontextItems.UseCompatibleStateImageBehavior = false;
-            this.lstKontextItems.View = System.Windows.Forms.View.Details;
-            this.lstKontextItems.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstKontextItems_MouseDown);
-            this.lstKontextItems.MouseLeave += new System.EventHandler(this.lstKontextItems_MouseLeave);
-            this.lstKontextItems.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lstKontextItems_MouseMove);
+            lstKontextItems.Anchor = ((AnchorStyles.Top | AnchorStyles.Bottom)
+                                      | AnchorStyles.Left)
+                                     | AnchorStyles.Right;
+            lstKontextItems.CheckBoxes = true;
+            lstKontextItems.Columns.AddRange(new[]
+            {
+                clmAllKontextItems
+            });
+            lstKontextItems.FullRowSelect = true;
+            lstKontextItems.Location = new Point(26, 75);
+            lstKontextItems.Name = "lstKontextItems";
+            lstKontextItems.Size = new Size(470, 292);
+            lstKontextItems.TabIndex = 5;
+            lstKontextItems.UseCompatibleStateImageBehavior = false;
+            lstKontextItems.View = View.Details;
+            lstKontextItems.MouseDown += lstKontextItems_MouseDown;
+            lstKontextItems.MouseLeave += lstKontextItems_MouseLeave;
+            lstKontextItems.MouseMove += lstKontextItems_MouseMove;
             // 
             // clmAllKontextItems
             // 
-            this.clmAllKontextItems.Text = "";
-            this.clmAllKontextItems.Width = 439;
+            clmAllKontextItems.Text = "";
+            clmAllKontextItems.Width = 439;
             // 
             // clmName
             // 
-            this.clmName.Text = "Available Windows";
-            this.clmName.Width = 438;
+            clmName.Text = "Available Windows";
+            clmName.Width = 438;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(29, 58);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(214, 14);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Right-click windows\' list for select options";
+            label1.AutoSize = true;
+            label1.Font = new Font("Calibri", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label1.Location = new Point(29, 58);
+            label1.Name = "label1";
+            label1.Size = new Size(214, 14);
+            label1.TabIndex = 2;
+            label1.Text = "Right-click windows\' list for select options";
             // 
             // EditKontext
             // 
-            this.ClientSize = new System.Drawing.Size(520, 426);
-            this.ControlBox = false;
-            this.Controls.Add(this.lstKontextItems);
-            this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.lblKontextName);
-            this.Controls.Add(this.txtKontextName);
-            this.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Margin = new System.Windows.Forms.Padding(6);
-            this.Name = "EditKontext";
-            this.Text = "Edit Kontext";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditKontext_FormClosed);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            ClientSize = new Size(520, 426);
+            ControlBox = false;
+            Controls.Add(lstKontextItems);
+            Controls.Add(btnCancel);
+            Controls.Add(btnOk);
+            Controls.Add(label1);
+            Controls.Add(lblKontextName);
+            Controls.Add(txtKontextName);
+            Font = new Font("Calibri", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Margin = new Padding(6);
+            Name = "EditKontext";
+            Text = "Edit Kontext";
+            FormClosed += EditKontext_FormClosed;
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         /// <summary>
@@ -297,13 +301,12 @@ namespace Kontext
                 new[]
                 {
                     new MenuItem("Select None", (sndr, args) => CheckItems((item, list) => false)),
-
                     new MenuItem("Select Visible",
                         (sndr, args) =>
                             CheckItems((item, list) => item.GetVisibilityLevel() == VisibilityLevel.Visible)),
                     new MenuItem("Select All Non-Kontexted", (sndr, args) => CheckItems((item, list) =>
                         Kontexts.AllKontexts.All(k => !k.Items.Contains(item)))),
-                    new MenuItem("Select All", (sndr, args) => CheckItems((item, list) => true)),
+                    new MenuItem("Select All", (sndr, args) => CheckItems((item, list) => true))
                 }
                 ));
 

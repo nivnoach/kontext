@@ -1,237 +1,234 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Kontext.AboutWindow
-// Assembly: Kontext, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: A8E5B05C-B7A7-438A-88F0-1E017A5EC409
-// Assembly location: C:\Users\Niv\Desktop\Kontext.exe
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace Kontext
+namespace Kontext.Forms
 {
-  internal class AboutWindow : Form
-  {
-    private IContainer components;
-    private TableLayoutPanel tableLayoutPanel;
-    private Label labelProductName;
-    private Label labelVersion;
-    private Label labelCopyright;
-    private Label labelCompanyName;
-    private TextBox textBoxDescription;
-    private Button okButton;
-
-    public string AssemblyTitle
+    internal class AboutWindow : Form
     {
-      get
-      {
-        object[] customAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyTitleAttribute), false);
-        if (customAttributes.Length > 0)
+#pragma warning disable 649
+        private IContainer components;
+#pragma warning restore 649
+        private Label labelCompanyName;
+        private Label labelCopyright;
+        private Label labelProductName;
+        private Label labelVersion;
+        private Button okButton;
+        private TableLayoutPanel tableLayoutPanel;
+        private TextBox textBoxDescription;
+
+        public AboutWindow()
         {
-          AssemblyTitleAttribute assemblyTitleAttribute = (AssemblyTitleAttribute) customAttributes[0];
-          if (assemblyTitleAttribute.Title != "")
-            return assemblyTitleAttribute.Title;
+            InitializeComponent();
+            Text = string.Format("About {0}", AssemblyTitle);
+            labelProductName.Text = AssemblyProduct;
+            labelVersion.Text = string.Format("Version {0}", AssemblyVersion);
+            labelCopyright.Text = AssemblyCopyright;
+            labelCompanyName.Text = AssemblyCompany;
+            textBoxDescription.Text = AssemblyDescription;
         }
-        return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
-      }
-    }
 
-    public string AssemblyVersion
-    {
-      get
-      {
-        return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-      }
-    }
+        public string AssemblyTitle
+        {
+            get
+            {
+                var customAttributes =
+                    Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyTitleAttribute), false);
+                if (customAttributes.Length > 0)
+                {
+                    var assemblyTitleAttribute = (AssemblyTitleAttribute) customAttributes[0];
+                    if (assemblyTitleAttribute.Title != "")
+                        return assemblyTitleAttribute.Title;
+                }
+                return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+            }
+        }
 
-    public string AssemblyDescription
-    {
-      get
-      {
-        object[] customAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyDescriptionAttribute), false);
-        if (customAttributes.Length == 0)
-          return "";
-        return ((AssemblyDescriptionAttribute) customAttributes[0]).Description;
-      }
-    }
+        public string AssemblyVersion
+        {
+            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+        }
 
-    public string AssemblyProduct
-    {
-      get
-      {
-        object[] customAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyProductAttribute), false);
-        if (customAttributes.Length == 0)
-          return "";
-        return ((AssemblyProductAttribute) customAttributes[0]).Product;
-      }
-    }
+        public string AssemblyDescription
+        {
+            get
+            {
+                var customAttributes =
+                    Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyDescriptionAttribute), false);
+                if (customAttributes.Length == 0)
+                    return "";
+                return ((AssemblyDescriptionAttribute) customAttributes[0]).Description;
+            }
+        }
 
-    public string AssemblyCopyright
-    {
-      get
-      {
-        object[] customAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyCopyrightAttribute), false);
-        if (customAttributes.Length == 0)
-          return "";
-        return ((AssemblyCopyrightAttribute) customAttributes[0]).Copyright;
-      }
-    }
+        public string AssemblyProduct
+        {
+            get
+            {
+                var customAttributes =
+                    Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyProductAttribute), false);
+                if (customAttributes.Length == 0)
+                    return "";
+                return ((AssemblyProductAttribute) customAttributes[0]).Product;
+            }
+        }
 
-    public string AssemblyCompany
-    {
-      get
-      {
-        object[] customAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyCompanyAttribute), false);
-        if (customAttributes.Length == 0)
-          return "";
-        return ((AssemblyCompanyAttribute) customAttributes[0]).Company;
-      }
-    }
+        public string AssemblyCopyright
+        {
+            get
+            {
+                var customAttributes =
+                    Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyCopyrightAttribute), false);
+                if (customAttributes.Length == 0)
+                    return "";
+                return ((AssemblyCopyrightAttribute) customAttributes[0]).Copyright;
+            }
+        }
 
-    public AboutWindow()
-    {
-      this.InitializeComponent();
-      this.Text = string.Format("About {0}", (object) this.AssemblyTitle);
-      this.labelProductName.Text = this.AssemblyProduct;
-      this.labelVersion.Text = string.Format("Version {0}", (object) this.AssemblyVersion);
-      this.labelCopyright.Text = this.AssemblyCopyright;
-      this.labelCompanyName.Text = this.AssemblyCompany;
-      this.textBoxDescription.Text = this.AssemblyDescription;
-    }
+        public string AssemblyCompany
+        {
+            get
+            {
+                var customAttributes =
+                    Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyCompanyAttribute), false);
+                if (customAttributes.Length == 0)
+                    return "";
+                return ((AssemblyCompanyAttribute) customAttributes[0]).Company;
+            }
+        }
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing && this.components != null)
-        this.components.Dispose();
-      base.Dispose(disposing);
-    }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && components != null)
+                components.Dispose();
+            base.Dispose(disposing);
+        }
 
-    private void InitializeComponent()
-    {
-            this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.labelProductName = new System.Windows.Forms.Label();
-            this.labelVersion = new System.Windows.Forms.Label();
-            this.labelCopyright = new System.Windows.Forms.Label();
-            this.labelCompanyName = new System.Windows.Forms.Label();
-            this.textBoxDescription = new System.Windows.Forms.TextBox();
-            this.okButton = new System.Windows.Forms.Button();
-            this.tableLayoutPanel.SuspendLayout();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            tableLayoutPanel = new TableLayoutPanel();
+            labelProductName = new Label();
+            labelVersion = new Label();
+            labelCopyright = new Label();
+            labelCompanyName = new Label();
+            textBoxDescription = new TextBox();
+            okButton = new Button();
+            tableLayoutPanel.SuspendLayout();
+            SuspendLayout();
             // 
             // tableLayoutPanel
             // 
-            this.tableLayoutPanel.ColumnCount = 2;
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 67F));
-            this.tableLayoutPanel.Controls.Add(this.labelProductName, 1, 0);
-            this.tableLayoutPanel.Controls.Add(this.labelVersion, 1, 1);
-            this.tableLayoutPanel.Controls.Add(this.labelCopyright, 1, 2);
-            this.tableLayoutPanel.Controls.Add(this.labelCompanyName, 1, 3);
-            this.tableLayoutPanel.Controls.Add(this.textBoxDescription, 1, 4);
-            this.tableLayoutPanel.Controls.Add(this.okButton, 1, 5);
-            this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel.Name = "tableLayoutPanel";
-            this.tableLayoutPanel.RowCount = 6;
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(417, 265);
-            this.tableLayoutPanel.TabIndex = 0;
+            tableLayoutPanel.ColumnCount = 2;
+            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
+            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 67F));
+            tableLayoutPanel.Controls.Add(labelProductName, 1, 0);
+            tableLayoutPanel.Controls.Add(labelVersion, 1, 1);
+            tableLayoutPanel.Controls.Add(labelCopyright, 1, 2);
+            tableLayoutPanel.Controls.Add(labelCompanyName, 1, 3);
+            tableLayoutPanel.Controls.Add(textBoxDescription, 1, 4);
+            tableLayoutPanel.Controls.Add(okButton, 1, 5);
+            tableLayoutPanel.Dock = DockStyle.Fill;
+            tableLayoutPanel.Location = new Point(9, 9);
+            tableLayoutPanel.Name = "tableLayoutPanel";
+            tableLayoutPanel.RowCount = 6;
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel.Size = new Size(417, 265);
+            tableLayoutPanel.TabIndex = 0;
             // 
             // labelProductName
             // 
-            this.labelProductName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelProductName.Location = new System.Drawing.Point(143, 0);
-            this.labelProductName.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelProductName.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelProductName.Name = "labelProductName";
-            this.labelProductName.Size = new System.Drawing.Size(271, 17);
-            this.labelProductName.TabIndex = 19;
-            this.labelProductName.Text = "Product Name";
-            this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            labelProductName.Dock = DockStyle.Fill;
+            labelProductName.Location = new Point(143, 0);
+            labelProductName.Margin = new Padding(6, 0, 3, 0);
+            labelProductName.MaximumSize = new Size(0, 17);
+            labelProductName.Name = "labelProductName";
+            labelProductName.Size = new Size(271, 17);
+            labelProductName.TabIndex = 19;
+            labelProductName.Text = "Product Name";
+            labelProductName.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // labelVersion
             // 
-            this.labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelVersion.Location = new System.Drawing.Point(143, 26);
-            this.labelVersion.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelVersion.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(271, 17);
-            this.labelVersion.TabIndex = 0;
-            this.labelVersion.Text = "Version";
-            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            labelVersion.Dock = DockStyle.Fill;
+            labelVersion.Location = new Point(143, 26);
+            labelVersion.Margin = new Padding(6, 0, 3, 0);
+            labelVersion.MaximumSize = new Size(0, 17);
+            labelVersion.Name = "labelVersion";
+            labelVersion.Size = new Size(271, 17);
+            labelVersion.TabIndex = 0;
+            labelVersion.Text = "Version";
+            labelVersion.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // labelCopyright
             // 
-            this.labelCopyright.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelCopyright.Location = new System.Drawing.Point(143, 52);
-            this.labelCopyright.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelCopyright.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelCopyright.Name = "labelCopyright";
-            this.labelCopyright.Size = new System.Drawing.Size(271, 17);
-            this.labelCopyright.TabIndex = 21;
-            this.labelCopyright.Text = "Copyright";
-            this.labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            labelCopyright.Dock = DockStyle.Fill;
+            labelCopyright.Location = new Point(143, 52);
+            labelCopyright.Margin = new Padding(6, 0, 3, 0);
+            labelCopyright.MaximumSize = new Size(0, 17);
+            labelCopyright.Name = "labelCopyright";
+            labelCopyright.Size = new Size(271, 17);
+            labelCopyright.TabIndex = 21;
+            labelCopyright.Text = "Copyright";
+            labelCopyright.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // labelCompanyName
             // 
-            this.labelCompanyName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelCompanyName.Location = new System.Drawing.Point(143, 78);
-            this.labelCompanyName.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelCompanyName.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelCompanyName.Name = "labelCompanyName";
-            this.labelCompanyName.Size = new System.Drawing.Size(271, 17);
-            this.labelCompanyName.TabIndex = 22;
-            this.labelCompanyName.Text = "Company Name";
-            this.labelCompanyName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            labelCompanyName.Dock = DockStyle.Fill;
+            labelCompanyName.Location = new Point(143, 78);
+            labelCompanyName.Margin = new Padding(6, 0, 3, 0);
+            labelCompanyName.MaximumSize = new Size(0, 17);
+            labelCompanyName.Name = "labelCompanyName";
+            labelCompanyName.Size = new Size(271, 17);
+            labelCompanyName.TabIndex = 22;
+            labelCompanyName.Text = "Company Name";
+            labelCompanyName.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // textBoxDescription
             // 
-            this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxDescription.Location = new System.Drawing.Point(143, 107);
-            this.textBoxDescription.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
-            this.textBoxDescription.Multiline = true;
-            this.textBoxDescription.Name = "textBoxDescription";
-            this.textBoxDescription.ReadOnly = true;
-            this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxDescription.Size = new System.Drawing.Size(271, 126);
-            this.textBoxDescription.TabIndex = 23;
-            this.textBoxDescription.TabStop = false;
-            this.textBoxDescription.Text = "Description";
+            textBoxDescription.Dock = DockStyle.Fill;
+            textBoxDescription.Location = new Point(143, 107);
+            textBoxDescription.Margin = new Padding(6, 3, 3, 3);
+            textBoxDescription.Multiline = true;
+            textBoxDescription.Name = "textBoxDescription";
+            textBoxDescription.ReadOnly = true;
+            textBoxDescription.ScrollBars = ScrollBars.Both;
+            textBoxDescription.Size = new Size(271, 126);
+            textBoxDescription.TabIndex = 23;
+            textBoxDescription.TabStop = false;
+            textBoxDescription.Text = "Description";
             // 
             // okButton
             // 
-            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.Location = new System.Drawing.Point(339, 239);
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(75, 23);
-            this.okButton.TabIndex = 24;
-            this.okButton.Text = "&OK";
+            okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            okButton.Location = new Point(339, 239);
+            okButton.Name = "okButton";
+            okButton.Size = new Size(75, 23);
+            okButton.TabIndex = 24;
+            okButton.Text = "&OK";
             // 
             // AboutWindow
             // 
-            this.AcceptButton = this.okButton;
-            this.ClientSize = new System.Drawing.Size(435, 283);
-            this.Controls.Add(this.tableLayoutPanel);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "AboutWindow";
-            this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "AboutWindow";
-            this.tableLayoutPanel.ResumeLayout(false);
-            this.tableLayoutPanel.PerformLayout();
-            this.ResumeLayout(false);
-
+            AcceptButton = okButton;
+            ClientSize = new Size(435, 283);
+            Controls.Add(tableLayoutPanel);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "AboutWindow";
+            Padding = new Padding(9);
+            ShowIcon = false;
+            ShowInTaskbar = false;
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "AboutWindow";
+            tableLayoutPanel.ResumeLayout(false);
+            tableLayoutPanel.PerformLayout();
+            ResumeLayout(false);
+        }
     }
-  }
 }

@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Kontext.WindowsEnumerator
-// Assembly: Kontext, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: A8E5B05C-B7A7-438A-88F0-1E017A5EC409
-// Assembly location: C:\Users\Niv\Desktop\Kontext.exe
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +6,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Kontext.Items;
 
-namespace Kontext
+namespace Kontext.WindowKontext
 {
     public class WindowsEnumerator
     {
         private static readonly ConcurrentDictionary<IntPtr, VisualWindow> WindowsCache =
-            new ConcurrentDictionary<IntPtr, VisualWindow>(); 
+            new ConcurrentDictionary<IntPtr, VisualWindow>();
+
         private static List<IntPtr> handlesToIgnore;
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
@@ -31,10 +26,10 @@ namespace Kontext
 
         [DllImport("user32.dll")]
         protected static extern bool IsWindowVisible(IntPtr hWnd);
-        
+
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool IsWindow(IntPtr hWnd);
+        private static extern bool IsWindow(IntPtr hWnd);
 
         public static List<KontextItem> GetKontextualItems(List<IntPtr> handlesToSkip)
         {
@@ -58,7 +53,7 @@ namespace Kontext
             }
 
             // Extract the window text
-            int windowTextLength = GetWindowTextLength(hWnd);
+            var windowTextLength = GetWindowTextLength(hWnd);
 
             // If the window has title and visible - this is a legit kontext item
             if (windowTextLength > 0 && IsWindowVisible(hWnd) && !WindowsCache.ContainsKey(hWnd))

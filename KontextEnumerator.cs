@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Kontext.Items;
+using Kontext.WindowKontext;
 
 namespace Kontext
 {

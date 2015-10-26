@@ -1,11 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Kontext.KontextItems.VisualWindow
-// Assembly: Kontext, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: A8E5B05C-B7A7-438A-88F0-1E017A5EC409
-// Assembly location: C:\Users\Niv\Desktop\Kontext.exe
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Kontext.WindowKontext;
@@ -14,9 +7,22 @@ namespace Kontext.Items
 {
     public class VisualWindow : KontextItem
     {
+        private const int SW_HIDE = 0;
+        private const int SW_SHOWNORMAL = 1;
+        private const int SW_NORMAL = 1;
+        private const int SW_SHOWMINIMIZED = 2;
+        private const int SW_SHOWMAXIMIZED = 3;
+        private const int SW_MAXIMIZE = 3;
+        private const int SW_SHOWNOACTIVATE = 4;
+        private const int SW_SHOW = 5;
+        private const int SW_MINIMIZE = 6;
+        private const int SW_SHOWMINNOACTIVE = 7;
+        private const int SW_SHOWNA = 8;
+        private const int SW_RESTORE = 9;
         private readonly IntPtr _hWnd;
         private readonly string _title;
-        private WINDOWPLACEMENT _placement = new WINDOWPLACEMENT();
+        private WINDOWPLACEMENT _placement;
+
         public VisualWindow(IntPtr hWnd, string title)
         {
             _hWnd = hWnd;
@@ -34,29 +40,6 @@ namespace Kontext.Items
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        internal struct WINDOWPLACEMENT
-        {
-            public int length;
-            public int flags;
-            public int showCmd;
-            public Point ptMinPosition;
-            public Point ptMaxPosition;
-            public Rectangle rcNormalPosition;
-        }
-
-        const int SW_HIDE = 0;
-        const int SW_SHOWNORMAL = 1;
-        const int SW_NORMAL = 1;
-        const int SW_SHOWMINIMIZED = 2;
-        const int SW_SHOWMAXIMIZED = 3;
-        const int SW_MAXIMIZE = 3;
-        const int SW_SHOWNOACTIVATE = 4;
-        const int SW_SHOW = 5;
-        const int SW_MINIMIZE = 6;
-        const int SW_SHOWMINNOACTIVE = 7;
-        const int SW_SHOWNA = 8;
-        const int SW_RESTORE = 9;
 
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -154,6 +137,16 @@ namespace Kontext.Items
 
             // Get the window's placement
             GetWindowPlacement(_hWnd, ref _placement);
-       }
+        }
+
+        internal struct WINDOWPLACEMENT
+        {
+            public int length;
+            public int flags;
+            public int showCmd;
+            public Point ptMinPosition;
+            public Point ptMaxPosition;
+            public Rectangle rcNormalPosition;
+        }
     }
 }

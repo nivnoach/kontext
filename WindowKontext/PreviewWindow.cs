@@ -1,70 +1,66 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Kontext.PreviewWindow
-// Assembly: Kontext, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: A8E5B05C-B7A7-438A-88F0-1E017A5EC409
-// Assembly location: C:\Users\Niv\Desktop\Kontext.exe
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Kontext
+namespace Kontext.WindowKontext
 {
-  public class PreviewWindow : Form
-  {
-    private const int CS_DROPSHADOW = 131072;
-    private IContainer components;
-    private Panel pnlBorder;
-
-    protected override CreateParams CreateParams
+    public class PreviewWindow : Form
     {
-      get
-      {
-        CreateParams createParams = base.CreateParams;
-        createParams.ClassStyle |= 131072;
-        return createParams;
-      }
-    }
+        private const int CS_DROPSHADOW = 131072;
+#pragma warning disable 649
+        private IContainer components;
+#pragma warning restore 649
+        private Panel pnlBorder;
 
-    public PreviewWindow()
-    {
-      this.InitializeComponent();
-    }
+        public PreviewWindow()
+        {
+            InitializeComponent();
+        }
 
-    public PreviewWindow(int top, int left)
-      : this()
-    {
-      this.Top = top;
-      this.Left = left;
-    }
+        public PreviewWindow(int top, int left)
+            : this()
+        {
+            Top = top;
+            Left = left;
+        }
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing && this.components != null)
-        this.components.Dispose();
-      base.Dispose(disposing);
-    }
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var createParams = base.CreateParams;
+                createParams.ClassStyle |= 131072;
+                return createParams;
+            }
+        }
 
-    private void InitializeComponent()
-    {
-      this.pnlBorder = new Panel();
-      this.SuspendLayout();
-      this.pnlBorder.BorderStyle = BorderStyle.Fixed3D;
-      this.pnlBorder.Dock = DockStyle.Fill;
-      this.pnlBorder.Location = new Point(0, 0);
-      this.pnlBorder.Name = "pnlBorder";
-      this.pnlBorder.Size = new Size(256, 193);
-      this.pnlBorder.TabIndex = 0;
-      this.AutoScaleDimensions = new SizeF(6f, 13f);
-      this.AutoScaleMode = AutoScaleMode.Font;
-      this.ClientSize = new Size(256, 193);
-      this.Controls.Add((Control) this.pnlBorder);
-      this.FormBorderStyle = FormBorderStyle.None;
-      this.Name = "PreviewWindow";
-      this.ShowInTaskbar = false;
-      this.Text = "PreviewWindow";
-      this.TopMost = true;
-      this.ResumeLayout(false);
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && components != null)
+                components.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            pnlBorder = new Panel();
+            SuspendLayout();
+            pnlBorder.BorderStyle = BorderStyle.Fixed3D;
+            pnlBorder.Dock = DockStyle.Fill;
+            pnlBorder.Location = new Point(0, 0);
+            pnlBorder.Name = "pnlBorder";
+            pnlBorder.Size = new Size(256, 193);
+            pnlBorder.TabIndex = 0;
+            AutoScaleDimensions = new SizeF(6f, 13f);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(256, 193);
+            Controls.Add(pnlBorder);
+            FormBorderStyle = FormBorderStyle.None;
+            Name = "PreviewWindow";
+            ShowInTaskbar = false;
+            Text = "PreviewWindow";
+            TopMost = true;
+            ResumeLayout(false);
+        }
     }
-  }
 }

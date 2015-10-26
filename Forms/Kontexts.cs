@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Kontext.Kontexts
-// Assembly: Kontext, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: A8E5B05C-B7A7-438A-88F0-1E017A5EC409
-// Assembly location: C:\Users\Niv\Desktop\Kontext.exe
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -14,8 +8,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Kontext.Items;
 using Kontext.Properties;
+using Kontext.WindowKontext;
 
-namespace Kontext
+namespace Kontext.Forms
 {
     public class Kontexts : Form
     {
@@ -23,28 +18,22 @@ namespace Kontext
         private const int WmKeydown = 256;
         private const int WmKeyup = 257;
         private static IntPtr _hhook = IntPtr.Zero;
-        private readonly Timer _fadeTimer = new Timer();
         private static readonly List<Kontext> _kontexts = new List<Kontext>();
+        private readonly Timer _fadeTimer = new Timer();
         private readonly List<PreviewContext> _previewWindows = new List<PreviewContext>();
         private bool _altPressed;
         private bool _ctrlPressed;
         private FadeDirection _fadeDirection;
         private Kontext _lastHoveredKontext;
-        private NotifyIcon _notifyIcon;
+        private readonly NotifyIcon _notifyIcon;
         private bool _shiftPressed;
         private ColumnHeader clmKontextName;
-        private ColumnHeader clmKontexts;
+#pragma warning disable 649
         private IContainer components;
+#pragma warning restore 649
         private ListView lstKontexts;
+        private ColumnHeader clmKontexts;
         private PictureBox pictureBox1;
-
-        public static List<Kontext> AllKontexts
-        {
-            get
-            {
-                return new List<Kontext>(_kontexts);
-            }
-        }
 
         public Kontexts()
         {
@@ -81,6 +70,11 @@ namespace Kontext
                 (a, b) => num = (int) new AboutWindow().ShowDialog()));
             _notifyIcon.ContextMenu.MenuItems.Add(new MenuItem("-"));
             _notifyIcon.ContextMenu.MenuItems.Add(new MenuItem("Exit", (a, b) => Application.Exit()));
+        }
+
+        public static List<Kontext> AllKontexts
+        {
+            get { return new List<Kontext>(_kontexts); }
         }
 
         public IEnumerable<Kontext> KontextList
@@ -146,7 +140,7 @@ namespace Kontext
                 _kontexts.Add(editKontext.GetKontext());
                 UpdateKontextList();
             }));
-            Kontext kontext = GetSelectedContext(e.Location, false);
+            var kontext = GetSelectedContext(e.Location, false);
             if (kontext != null)
             {
                 contextMenu.MenuItems.Add(new MenuItem("-"));
@@ -175,7 +169,7 @@ namespace Kontext
 
         private void ShowSelectedKontext(MouseEventArgs e)
         {
-            Kontext kontext = GetSelectedContext(e.Location, false);
+            var kontext = GetSelectedContext(e.Location, false);
             if (kontext == null)
                 return;
             KontextEnumerator.GetAllItems(new List<IntPtr> {Handle})
@@ -187,7 +181,7 @@ namespace Kontext
 
         private Kontext GetSelectedContext(Point mousePoint, bool select = false)
         {
-            ListViewItem itemAt = lstKontexts.GetItemAt(mousePoint.X, mousePoint.Y);
+            var itemAt = lstKontexts.GetItemAt(mousePoint.X, mousePoint.Y);
             if (itemAt == null)
                 return null;
             if (select)
@@ -218,7 +212,7 @@ namespace Kontext
         {
             if (code >= 0)
             {
-                int num = Marshal.ReadInt32(lParam);
+                var num = Marshal.ReadInt32(lParam);
                 if (wParam == (IntPtr) 256)
                 {
                     if (num.ToString(CultureInfo.CurrentCulture) == "164")
@@ -237,7 +231,7 @@ namespace Kontext
                     if (num.ToString(CultureInfo.CurrentCulture) == "160")
                         _shiftPressed = false;
                 }
-                FadeDirection fadeDirection = _fadeDirection;
+                var fadeDirection = _fadeDirection;
                 _fadeDirection = !_shiftPressed || !_ctrlPressed || !_altPressed
                     ? FadeDirection.FadeOut
                     : FadeDirection.FadeIn;
@@ -270,7 +264,7 @@ namespace Kontext
 
         private void lstKontexts_MouseMove(object sender, MouseEventArgs e)
         {
-            ListViewItem itemAt = lstKontexts.GetItemAt(e.X, e.Y);
+            var itemAt = lstKontexts.GetItemAt(e.X, e.Y);
             if (itemAt == null)
             {
                 ClearPreviewedContext();
@@ -288,10 +282,10 @@ namespace Kontext
                         return;
                     ClearPreviewedContext();
                     _lastHoveredKontext = kontext;
-                    int num = Width + 10;
-                    int top = Top;
+                    var num = Width + 10;
+                    var top = Top;
                     var width = (int) (Screen.FromHandle(Handle).WorkingArea.Width*0.15);
-                    foreach (KontextItem kontextItem in kontext.Items)
+                    foreach (var kontextItem in kontext.Items)
                     {
                         var previewWindow = new PreviewWindow();
                         var windowsPreview = new WindowsPreview(previewWindow.Handle, width);
@@ -330,67 +324,74 @@ namespace Kontext
 
         private void InitializeComponent()
         {
-            lstKontexts = new ListView();
-            clmKontextName = new ColumnHeader();
-            pictureBox1 = new PictureBox();
-            clmKontexts = new ColumnHeader();
-            ((ISupportInitialize) (pictureBox1)).BeginInit();
-            SuspendLayout();
+            this.lstKontexts = new System.Windows.Forms.ListView();
+            this.clmKontexts = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clmKontextName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.SuspendLayout();
             // 
             // lstKontexts
             // 
-            lstKontexts.Anchor = ((AnchorStyles.Top | AnchorStyles.Bottom)
-                                  | AnchorStyles.Left)
-                                 | AnchorStyles.Right;
-            lstKontexts.BorderStyle = BorderStyle.None;
-            lstKontexts.Columns.AddRange(new[]
-            {
-                clmKontexts
-            });
-            lstKontexts.Cursor = Cursors.Hand;
-            lstKontexts.Font = new Font("DengXian", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lstKontexts.FullRowSelect = true;
-            lstKontexts.Location = new Point(12, 48);
-            lstKontexts.MultiSelect = false;
-            lstKontexts.Name = "lstKontexts";
-            lstKontexts.Size = new Size(308, 508);
-            lstKontexts.TabIndex = 2;
-            lstKontexts.UseCompatibleStateImageBehavior = false;
-            lstKontexts.View = View.Details;
-            lstKontexts.MouseDown += lstKontexts_MouseDown;
-            lstKontexts.MouseMove += lstKontexts_MouseMove;
-            // 
-            // clmKontextName
-            // 
-            clmKontextName.Width = 312;
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = Resources.icon_trans;
-            pictureBox1.Location = new Point(-2, 12);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(322, 80);
-            pictureBox1.TabIndex = 3;
-            pictureBox1.TabStop = false;
+            this.lstKontexts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstKontexts.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstKontexts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clmKontexts});
+            this.lstKontexts.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lstKontexts.Font = new System.Drawing.Font("DengXian", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstKontexts.FullRowSelect = true;
+            this.lstKontexts.Location = new System.Drawing.Point(12, 48);
+            this.lstKontexts.MultiSelect = false;
+            this.lstKontexts.Name = "lstKontexts";
+            this.lstKontexts.Size = new System.Drawing.Size(308, 508);
+            this.lstKontexts.TabIndex = 2;
+            this.lstKontexts.UseCompatibleStateImageBehavior = false;
+            this.lstKontexts.View = System.Windows.Forms.View.Details;
             // 
             // clmKontexts
             // 
-            clmKontexts.Text = "Contexts";
+            this.clmKontexts.Text = "Kontexts";
+            // 
+            // clmKontextName
+            // 
+            this.clmKontextName.Width = 312;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::Kontext.Properties.Resources.icon_trans;
+            this.pictureBox1.Location = new System.Drawing.Point(-2, 12);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(322, 80);
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
             // 
             // Kontexts
             // 
-            ClientSize = new Size(332, 568);
-            ControlBox = false;
-            Controls.Add(pictureBox1);
-            Controls.Add(lstKontexts);
-            FormBorderStyle = FormBorderStyle.None;
-            Name = "Kontexts";
-            StartPosition = FormStartPosition.Manual;
-            Text = "Kontexts";
-            ((ISupportInitialize) (pictureBox1)).EndInit();
-            ResumeLayout(false);
+            this.ClientSize = new System.Drawing.Size(332, 568);
+            this.ControlBox = false;
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.lstKontexts);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Name = "Kontexts";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Text = "Kontexts";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.ResumeLayout(false);
+
         }
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        /// <summary>
+        ///     Fade directory
+        /// </summary>
+        internal enum FadeDirection
+        {
+            FadeOut,
+            FadeIn
+        }
+
     }
 }

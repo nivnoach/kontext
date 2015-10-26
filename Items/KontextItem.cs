@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using Kontext.Tasks;
 
 namespace Kontext.Items
 {
@@ -10,11 +8,6 @@ namespace Kontext.Items
     /// </summary>
     public abstract class KontextItem
     {
-        /// <summary>
-        ///     System-managed tasks
-        /// </summary>
-        public List<IKontextTask> Tasks { get; set; }
-
         /// <summary>
         ///     Returns the name of this item
         /// </summary>
